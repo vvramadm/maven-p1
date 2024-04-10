@@ -2,19 +2,24 @@ pipeline {
     agent any
 
     stages {
-        stage('Test') {
+        stage('clean') {
             steps {
-                bat 'mvn test'
-            }
-        }
-        stage('validate') {
-            steps {
-                bat 'mvn validate'
+                bat 'mvn clean'
             }
         }
         stage('build') {
             steps {
                 bat 'mvn package'
+            }
+        }
+        stage('archive') {
+            steps {
+                archiveArtifacts artifacts: '**/*.war'
+            }
+        }
+        stage('Deploy to QA') {
+            steps {
+                build job: 'delpoy_to_tomcat'
             }
         }
     }

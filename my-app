@@ -1,0 +1,16 @@
+node{
+   stage('SCM Checkout'){
+      git 'https://github.com/Dhivyasdream/project1.git'
+    }
+    stage('compile-Package'){
+
+       def mvnHome = tool name: 'maven', type: 'maven'
+       sh "$(mvnHome}/bin/mvn clean package"
+            sh 'mv target/myweb*.war target/newapp.war'
+    }
+    stage('SonarQube Analysis') {
+                 def mvnHome = tool name: 'maven', type: 'maven'
+                 withSonarQubeenv('sonar') {
+                   sh "${mvnHome}/bin/mvn sonar:sonar"
+                 }
+             }    
